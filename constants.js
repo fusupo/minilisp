@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _ = require('underscore');
 
 module.exports = {
 	openParens: '(',
@@ -12,11 +12,11 @@ module.exports = {
 	isANumber: _.partial(_.contains,'0123456789'),
 	isAToken: _.partial(_.contains,'()*+-/'),
 	functionMap: {
-		'+': 'core.add',
-		'-': 'core.subtract',
-		'*': 'core.multiply',
-		'/': 'core.divide',
-		'print': 'core.print'
+		'+': 'add',
+		'-': 'subtract',
+		'*': 'multiply',
+		'/': 'divide',
+		'print': 'print'
 	},
 	coreFunctions: ['print', 'defn']
 }

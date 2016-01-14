@@ -1,7 +1,26 @@
+var _ = require('underscore');
 module.exports = {
-	add: function(x, y){ return x + y; },
-	subtract: function(x, y){ return x - y; },
-	multiply: function(x, y){ return x * y;},
-	divide: function(x, y){ return x / y; },
-	print: function(x){ console.log(x); }
-}
+  add: function() {
+    return _.reduce(_.rest(arguments), function(m, a){
+      return m + a;
+    }, _.first(arguments));
+  },
+  subtract: function() {
+    return _.reduce(_.rest(arguments), function(m, a){
+      return m - a;
+    }, _.first(arguments));
+  },
+  multiply: function() {
+    return _.reduce(_.rest(arguments), function(m, a){
+      return m * a;
+    }, _.first(arguments));
+  },
+  divide: function() {
+    return _.reduce(_.rest(arguments), function(m, a){
+      return m / a;
+    }, _.first(arguments));
+  },
+  print: function(x) {
+    console.log(x);
+  }
+};
