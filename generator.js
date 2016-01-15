@@ -12,10 +12,6 @@ var Controller = function(env) {
 
 module.exports = interpreter = function(roots, env) {
   var controller = new Controller(env);
-  // _.each(roots, function(node) {
-  //   interpretNode(node, controller);
-  // });
-  // return controller.result;
   var intrp = interpretNode(roots[0], controller);
   return intrp;
 };
@@ -39,10 +35,15 @@ function interpretNode(node, controller) {
       } else if (typeof envVal === 'number') {
         node.setValue(envVal);
         node.setType('number');
+      } else if (Array.isArray(envVal)) {
+        // node.setValue(envVal);
+        // node.setType('array');
+        var tokens = tokenizer(JSON.stringify(envVal));
+        var tree = parser(tokens);
+        node = interpretNode(tree.roots[0], controller);
       }
     }
-  }
-
+  } 
   return node;
 }
 
@@ -53,18 +54,16 @@ function writeFunction(ast, controller) {
     functionName = value;
   }
   var func = core[functionName];
-  console.log(func);
-  // controller.result += functionName + '(';
   var rawArgs = _.map(ast.children, function(argument, idx) {
     return interpretNode(argument, controller);
   });
   ast.children = rawArgs;
   var argsAreResolvedP = _.reduce(rawArgs, function(m, o) {
-    return m && (o.get('type') === 'string' || o.get('type') === 'number');
+    return m && (o.get('type') === 'string' || o.get('type') === 'number' || o.get('type') === 'array');
   }, true);
   if (argsAreResolvedP) {
     var finalArgs = _.map(rawArgs, function(arg) {
-      return arg.get('type') === 'number' ? parseFloat(arg.get('value')) : arg.get('value');
+      return resolveArg(arg);
     });
     var res = func.apply(null, finalArgs);
     ast.setValue(res);
@@ -72,6 +71,19 @@ function writeFunction(ast, controller) {
     ast.children = [];
   }
   return ast;
+}
+
+function resolveArg(arg){
+  if (arg.get('type') === 'number') {
+    return parseFloat(arg.get('value'));
+  } else if(arg.get('type') === 'array'){
+    var elms = _.map(arg.children, function(child){
+      return resolveArg(child);
+    });
+    return elms;
+  } else {
+    return arg.get('value');
+  }
 }
 
 function writeCustomFunction(node, controller) {

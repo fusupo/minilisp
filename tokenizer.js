@@ -2,6 +2,7 @@ var constants = require('./constants.js');
 var _ = require('underscore');
 
 module.exports = function tokenizer(text) {
+  text = "" + text;
   var result = [];
   var tokenStream = new TokenStream(text);
   while (!tokenStream.isDone()) {
@@ -13,7 +14,8 @@ module.exports = function tokenizer(text) {
         value: token
       });
     } else if (constants.isALetter(token)) {
-      while (constants.isALetter(tokenStream.nextToken())) {
+      while (constants.isALetter(tokenStream.nextToken()) ||
+             constants.isANumber(tokenStream.nextToken())) {
         tokenStream.advance();
         token += tokenStream.currentToken();
       }
@@ -72,4 +74,8 @@ TokenStream.prototype.isDone = function() {
 
 TokenStream.prototype.nextToken = function() {
   return this.text[this.index + 1];
+};
+
+TokenStream.prototype.prevToken = function() {
+  return this.text[this.index - 1];
 };

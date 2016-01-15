@@ -27,10 +27,17 @@ Tree.prototype.toStr = function(){
   var val = this.get('value');
   switch(this.get('type')){
   case 'number':
+    return parseFloat(val);
+    break;
   case 'string':
   case 'keyword':
     return val;
     break;
+  case 'array':
+    var args = _.map(this.children, function(child){
+      return child.toStr();
+    });
+    return JSON.stringify(args);
   case 'function':
     var args = _.map(this.children, function(child){
       return child.toStr();

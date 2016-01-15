@@ -22,5 +22,11 @@ module.exports = {
   },
   print: function(x) {
     console.log(x);
+  },
+  gt: function(a, i) {
+    return a[i];
+  },
+  ct: function(a) {
+    return a.length;
   }
 };

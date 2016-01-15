@@ -23,6 +23,11 @@ module.exports = function Parser(tokens) {
 
 function processOperators(token, ast) {
   switch (token.value) {
+  case constants.openBrackets:
+    var tree = new Tree();
+    tree.setType('array');
+    ast.newTree(tree);
+    break;
   case constants.openParens:
     var tree = new Tree();
     ast.newTree(tree);
@@ -34,6 +39,7 @@ function processOperators(token, ast) {
     ast.pointer.setType('function');
     ast.pointer.setValue(token.value);
     break;
+  case constants.closeBrackets:
   case constants.closeParens:
     ast.back();
     break;
@@ -44,6 +50,7 @@ function processValue(token, ast) {
   // values are children of function nodes so when we reach a value
   // we just add it as a new child of the current node
   var tree = new Tree();
+  if(ast.pointer === null) ast.newTree(tree);
   tree.setType(token.type);
   tree.setValue(token.value);
   ast.pointer.insert(tree);
