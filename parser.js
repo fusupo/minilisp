@@ -2,23 +2,22 @@ var constants = require('./constants.js');
 var _ = require('underscore');
 var Tree = require('./tree.js');
 var AstResult = require('./ast.js');
-
 var FUNC_NAMES = constants.coreFunctions.slice();
 
 module.exports = function Parser(tokens) {
-  var ast = new AstResult();
-  var parserMap = {
-    operator: processOperators,
-    keyword: processKeywords,
-    number: processValue,
-    string: processValue
-  };
-  _.each(tokens, function(token) {
-    var func = parserMap[token.type];
-    func(token, ast);
-  });
+    var ast = new AstResult();
+    var parserMap = {
+        operator: processOperators,
+        keyword: processKeywords,
+        number: processValue,
+        string: processValue
+    };
+    _.each(tokens, function(token) {
+        var func = parserMap[token.type];
+        func(token, ast);
+    });
 
-  return ast;
+    return ast;
 };
 
 function processOperators(token, ast) {
@@ -57,28 +56,29 @@ function processValue(token, ast) {
 }
 
 function processKeywords(token, ast) {
-  if (ast.pointer.get('type') === 'function' &&
-      ast.pointer.get('value') === 'defn') {
-    var tree = new Tree();
-    tree.setType('function_name');
-    tree.setValue(token.value);
-    FUNC_NAMES.push(token.value);
-    ast.pointer.insert(tree);
-  } else if (ast.pointer.get('value') === null &&
-             !_.contains(FUNC_NAMES, token.value)) {
-    ast.pointer.setType('arguments');
-    var tree = new Tree();
-    tree.setType('variable');
-    tree.setValue(token.value);
-    ast.pointer.insert(tree);
-  } else if (_.contains(FUNC_NAMES, token.value)) {
-    ast.pointer.setType('function');
-    ast.pointer.setValue(token.value);
-  } else {
-    // processValue(token, ast);
-    var tree = new Tree();
-    tree.setType('keyword');
-    tree.setValue(token.value);
-    ast.pointer.insert(tree);
-  }
+    console.log('whatdafuck?!');
+    if (ast.pointer && (ast.pointer.get('type') === 'function' &&
+                        ast.pointer.get('value') === 'defn')) {
+        var tree = new Tree();
+        tree.setType('function_name');
+        tree.setValue(token.value);
+        FUNC_NAMES.push(token.value);
+        ast.pointer.insert(tree);
+    } else if (ast.pinter && (ast.pointer.get('value') === null &&
+                              !_.contains(FUNC_NAMES, token.value))) {
+        ast.pointer.setType('arguments');
+        var tree = new Tree();
+        tree.setType('variable');
+        tree.setValue(token.value);
+        ast.pointer.insert(tree);
+    } else if (_.contains(FUNC_NAMES, token.value)) {
+        ast.pointer.setType('function');
+        ast.pointer.setValue(token.value);
+    } else {
+         processValue(token, ast);
+        // var tree = new Tree();
+        // tree.setType('keyword');
+        // tree.setValue(token.value);
+        // ast.pointer.insert(tree);
+    }
 }

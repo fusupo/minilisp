@@ -18,9 +18,9 @@ module.exports = {
     '-': 'subtract',
     '*': 'multiply',
     '/': 'divide',
-    'print': 'print',
-    'ct': 'ct',
-    'gt': 'gt'
+    print: 'print',
+    ct: 'ct',
+    gt: 'gt'
   },
   coreFunctions: ['print', 'defn', 'ct', 'gt']
 };
